@@ -64,12 +64,18 @@ public class ProgressHUD: UIView {
 	let keyboardWillHide		= UIResponder.keyboardWillHideNotification
 	let keyboardDidShow			= UIResponder.keyboardDidShowNotification
 	let keyboardDidHide			= UIResponder.keyboardDidHideNotification
+#if !os(visionOS)
 	let orientationDidChange	= UIDevice.orientationDidChangeNotification
+#endif
 
 	static let shared = ProgressHUD()
 
 	convenience private init() {
-		self.init(frame: UIScreen.main.bounds)
+#if os(visionOS)
+        self.init(frame: .zero)
+#else
+        self.init(frame: UIScreen.main.bounds)
+#endif
 		self.alpha = 0
 	}
 
@@ -215,7 +221,9 @@ extension ProgressHUD {
 			NotificationCenter.default.addObserver(self, selector: #selector(setupPosition(_:)), name: keyboardWillHide, object: nil)
 			NotificationCenter.default.addObserver(self, selector: #selector(setupPosition(_:)), name: keyboardDidShow, object: nil)
 			NotificationCenter.default.addObserver(self, selector: #selector(setupPosition(_:)), name: keyboardDidHide, object: nil)
+#if !os(visionOS)
 			NotificationCenter.default.addObserver(self, selector: #selector(setupPosition(_:)), name: orientationDidChange, object: nil)
+#endif
 			didSetupNotifications = true
 		}
 	}
@@ -533,7 +541,11 @@ extension ProgressHUD {
 				if String(describing: type(of: view)).hasPrefix("UIInputSetContainerView") {
 					for subview in view.subviews {
 						if String(describing: type(of: subview)).hasPrefix("UIInputSetHostView") {
-							let screenRect = UIScreen.main.bounds
+#if os(visionOS)
+                            let screenRect = self.window?.bounds ?? .init(x: 0, y: 0, width: 800, height: 600)
+#else
+                            let screenRect = UIScreen.main.bounds
+#endif
 							let keyboardRect = window.convert(subview.frame, to: nil)
 							if keyboardRect.intersects(screenRect) {
 								return subview.frame.height

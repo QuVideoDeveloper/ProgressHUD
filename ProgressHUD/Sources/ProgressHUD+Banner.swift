@@ -103,11 +103,13 @@ extension ProgressHUD {
 	}
 
 	private func createBannerObserver() {
+#if !os(visionOS)
 		observerBanner = NotificationCenter.default.addObserver(forName: orientationDidChange, object: nil, queue: .main) { notification in
 			DispatchQueue.main.async {
 				self.resizeBanner()
 			}
 		}
+#endif
 	}
 }
 
