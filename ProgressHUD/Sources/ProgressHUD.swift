@@ -13,7 +13,7 @@ import UIKit
 
 public class ProgressHUD: UIView {
 
-	var main: UIWindow!
+	public var main: UIWindow!
 
 	// Banner properties
 	var viewBanner: UIToolbar?
@@ -68,7 +68,7 @@ public class ProgressHUD: UIView {
 	let orientationDidChange	= UIDevice.orientationDidChangeNotification
 #endif
 
-	static let shared = ProgressHUD()
+	public static let shared = ProgressHUD()
 
 	convenience private init() {
 #if os(visionOS)
@@ -233,9 +233,7 @@ extension ProgressHUD {
 extension ProgressHUD {
 
 	func setupWindow() {
-		if (main == nil) {
-			main = UIApplication.shared.windows.first
-		}
+        main = UIApplication.shared.windows.first
 	}
 }
 
@@ -250,9 +248,8 @@ extension ProgressHUD {
 	private func setupBackground(_ interaction: Bool) {
 		if (viewBackground == nil) {
 			viewBackground = UIView(frame: bounds)
-			main.addSubview(viewBackground!)
 		}
-
+        main.addSubview(viewBackground!)
 		viewBackground?.backgroundColor = interaction ? .clear : colorBackground
 		viewBackground?.isUserInteractionEnabled = !interaction
 	}
